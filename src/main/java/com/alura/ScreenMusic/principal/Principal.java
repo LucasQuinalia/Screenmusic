@@ -1,15 +1,19 @@
 package com.alura.ScreenMusic.principal;
 
 import com.alura.ScreenMusic.model.Artista;
+import com.alura.ScreenMusic.model.Musica;
 import com.alura.ScreenMusic.model.TipoArtista;
 import com.alura.ScreenMusic.repository.ArtistaRepository;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 
 public class Principal {
 
     private Scanner leitura = new Scanner(System.in);
     private ArtistaRepository repositorio;
+    private Optional<Artista> artista;
 
     public Principal(ArtistaRepository repositorio) {
         this.repositorio = repositorio;
@@ -57,7 +61,7 @@ public class Principal {
     private void cadastrarArtista() {
         var continuar = "s";
 
-        while (continuar.toLowerCase().equals("s")) {
+        while (continuar.equalsIgnoreCase("s")) {
             System.out.println("Digite o nome do artista que deseja cadastrar:");
             var nome = leitura.nextLine();
             System.out.println("Digite o tipo do artista (solo, dupla ou banda):");
@@ -72,24 +76,34 @@ public class Principal {
     }
 
     private void cadastrarMusica() {
-        
+        buscarArtista();
+
+        System.out.println("Qual o nome da música que deseja cadastrar?");
+        var nomeMusica = leitura.nextLine();
+        Musica musica = new Musica(nomeMusica);
+        if (artista.isPresent()) {
+            musica.setArtista(artista.get());
+            artista.get().getMusicas().add(musica);
+            repositorio.save(artista.get());
+        }
     }
 
     private void listarMusicas() {
-        
+        List<Artista> artistas = repositorio.findAll();
+        artistas.forEach(System.out::println);
     }
 
     private void buscarMusicasPorArtista() {
-        
+
     }
 
     private void buscarArtista() {
         System.out.println("Qual o nome do artista que deseja buscar?");
         var nome = leitura.nextLine();
-        var artistaBuscado = repositorio.findByNomeContainingIgnoreCase(nome);
+        artista = repositorio.findByNomeContainingIgnoreCase(nome);
 
-        if (artistaBuscado.isPresent()) {
-            System.out.println("Dados do artista encontrado: " + artistaBuscado.get());
+        if (artista.isPresent()) {
+            System.out.println("Dados do artista encontrado: " + artista.get());
         } else {
             System.out.println("Artista não encontrado!");
         }

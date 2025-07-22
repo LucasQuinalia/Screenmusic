@@ -23,7 +23,6 @@ public class Artista {
     public Artista(String nome, TipoArtista tipoArtista) {
         this.nome = nome;
         this.tipo = tipoArtista;
-
     }
 
     public Long getId() {

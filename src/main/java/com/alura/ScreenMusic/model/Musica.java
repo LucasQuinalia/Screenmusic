@@ -2,6 +2,8 @@ package com.alura.ScreenMusic.model;
 
 import jakarta.persistence.*;
 
+import java.util.Optional;
+
 @Entity
 @Table(name = "musicas")
 public class Musica {
@@ -11,6 +13,12 @@ public class Musica {
     private String titulo;
     @ManyToOne
     private Artista artista;
+
+    public Musica() {}
+
+    public Musica(String titulo) {
+        this.titulo = titulo;
+    }
 
     public Long getId() {
         return id;
@@ -39,6 +47,6 @@ public class Musica {
     @Override
     public String toString() {
         return "Música: '" + titulo + '\'' +
-                ", artista: " + artista;
+                ", artista: " + artista.getNome();
     }
 }
